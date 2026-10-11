@@ -165,6 +165,42 @@ kbd {
   border-color: var(--accent);
 }
 
+/* ---- Skins ---- */
+#skin-select {
+  align-self: flex-start;
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+#skin-select:hover,
+#skin-select:focus-visible {
+  border-color: var(--accent);
+}
+
+[data-skin="neon"] #board,
+[data-skin="neon"] #next-canvas {
+  border-color: #3a1f55;
+  box-shadow: 0 0 24px rgba(224, 64, 251, 0.35), 0 0 4px rgba(0, 240, 255, 0.4);
+}
+
+[data-skin="pastel"] #board,
+[data-skin="pastel"] #next-canvas {
+  border-radius: 12px;
+}
+
+[data-skin="pixel"] #board,
+[data-skin="pixel"] #next-canvas {
+  border-radius: 0;
+  border-width: 2px;
+}
+
 /* ---- Overlay ---- */
 .overlay {
   position: absolute;

@@ -43,6 +43,11 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
 - **Pausa** y **Game Over** con opción de reinicio.
 - **Modo claro / oscuro**: botón en el panel lateral. Por defecto inicia en oscuro y la elección se guarda en `localStorage`.
+- **Skins visuales**: selector `SKIN` en el panel lateral que cambia al instante (sin recargar, incluso en pausa) la apariencia de las piezas y del tablero. La elección se guarda en `localStorage` (`tetris-skin`):
+  - **Retro** — bloques cuadrados y colores planos (estilo por defecto; respeta el modo claro/oscuro).
+  - **Neón** — fondo negro y bloques tipo tubo de neón con efecto _glow_ (`shadowBlur` del canvas).
+  - **Pastel** — colores suaves y bloques con bordes redondeados.
+  - **Pixel art** — cada bloque lleva una textura de píxeles con bisel de luz y sombra.
 
 ---
 
@@ -118,6 +123,7 @@ Contiene toda la lógica del juego. A grandes rasgos:
 - **Puntuación**: usa la tabla clásica `[0, 100, 300, 500, 800]` multiplicada por el nivel actual; el hard drop suma 2 puntos por celda recorrida y el soft drop 1 punto por fila.
 - **Nivel y velocidad**: el nivel sube cada 10 líneas; la velocidad de caída se calcula como `max(100, 1000 − (level − 1) × 90)` milisegundos.
 - **Ghost piece** (`ghostY`): proyecta la posición final de la pieza actual hacia abajo y la dibuja con `globalAlpha = 0.2`.
+- **Skins** (`SKINS`, `applySkin`): cada skin define su paleta por tipo de pieza (si le falta un color usa `COLORS`), un fondo y color de rejilla opcionales (si son `null` se usan las variables CSS del tema) y su propia función `drawBlock`. El `drawBlock` global conserva su firma y delega en el skin activo dentro de `save()`/`restore()`, para que efectos como el _glow_ no se filtren al resto del dibujo.
 
 ### Flujo del juego
 
@@ -175,6 +181,7 @@ Algunos parámetros fáciles de tunear en `game.js`:
 | `ROWS`         | Filas del tablero                        | `20`                  |
 | `BLOCK`        | Tamaño en píxeles de cada celda          | `30`                  |
 | `COLORS`       | Paleta de colores por tipo de pieza      | 7 colores             |
+| `SKINS`        | Skins disponibles (paleta, fondo, dibujo) | `retro`, `neon`, `pastel`, `pixel` |
 | `LINE_SCORES`  | Puntos por 1, 2, 3 o 4 líneas eliminadas | `[0,100,300,500,800]` |
 | `dropInterval` | Velocidad inicial de caída en ms         | `1000`                |
 

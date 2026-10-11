@@ -24,6 +24,7 @@ There is nothing to compile; reload the browser after edits. Verify changes manu
 - **Collision is the single source of truth.** `collide(shape, ox, oy)` handles walls, floor, and locked blocks (cells above row 0 are allowed). Movement, rotation wall kicks (`tryRotate`: offsets `0, -1, 1, -2, 2`), ghost projection (`ghostY`), and game-over detection in `spawn()` all go through it.
 - **Lock pipeline:** `lockPiece()` → `merge()` → `clearLines()` (updates lines/score/level/`dropInterval`) → `spawn()` (promotes `next`, may call `endGame()`).
 - **Loop:** `loop(ts)` via `requestAnimationFrame` accumulates `dt` into `dropAccum` and steps gravity when it exceeds `dropInterval`, then redraws everything each frame. Pause/game-over stop it with `cancelAnimationFrame(animId)`; resuming resets `lastTime` to avoid a large `dt` jump.
+- **Skins.** `SKINS[name]` holds `colors` (indexed by piece type, falls back to `COLORS`), optional `boardBg`/`grid` (`null` = theme CSS vars), and `drawBlock(context, px, py, size, color, alpha)`. The global `drawBlock` delegates to the active `skin` inside `save()`/`restore()`; `draw()`/`drawNext()` paint the background via `clearCanvas()`. `applySkin()` persists to `localStorage['tetris-skin']`, sets `data-skin` on `<html>`, and redraws if `current && next` exist (works while paused).
 - **HUD** is DOM (`updateHUD()`), not canvas; the keydown handler calls it after every key.
 
 ## Coupling between files
