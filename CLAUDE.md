@@ -25,14 +25,11 @@ There is nothing to compile; reload the browser after edits. Verify changes manu
 - **Lock pipeline:** `lockPiece()` → `merge()` → `clearLines()` (updates lines/score/level/`dropInterval`) → `spawn()` (promotes `next`, may call `endGame()`).
 - **Loop:** `loop(ts)` via `requestAnimationFrame` accumulates `dt` into `dropAccum` and steps gravity when it exceeds `dropInterval`, then redraws everything each frame. Pause/game-over stop it with `cancelAnimationFrame(animId)`; resuming resets `lastTime` to avoid a large `dt` jump.
 - **HUD** is DOM (`updateHUD()`), not canvas; the keydown handler calls it after every key.
+- **Pause menu** (`#pause-menu`, separate from the game-over `#overlay`): `P`/`Escape` call `togglePause()` (auto-repeat ignored); while paused the keydown handler returns early, so no game input reaches the board. Resuming hides the menu, blurs any focused menu control, and resets `lastTime` (but keeps `dropAccum`, so rapid pause/resume can't freeze gravity). `startLevel` is a persisted preference (`localStorage['tetris-start-level']`, 1–15) copied into the per-game `baseLevel` by `init()`; `clearLines()` never drops below `baseLevel`. Speed comes from `intervalForLevel(level)`.
 
 ## Coupling between files
 
 - `COLS × BLOCK` / `ROWS × BLOCK` must match `<canvas id="board" width="300" height="600">` in `index.html`.
 - `drawNext()` assumes a 4×4 grid of 30px cells, matching `<canvas id="next-canvas" width="120" height="120">`.
-- `game.js` grabs elements by id at load time (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`); renaming ids in HTML requires updating these lookups. The overlay is toggled via the `hidden` class defined in `style.css`.
-- Controls are documented in three places: the keydown handler, the controls list in `index.html`, and the README table.
-
-## Known quirk
-
-Unpausing in `togglePause()` restarts the loop but does not re-add the `hidden` class to `#overlay`, so the "PAUSA" overlay stays visible after resuming.
+- `game.js` grabs elements by id at load time (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-toggle`, and the pause menu's `pause-menu`, `pause-resume`, `pause-restart`, `pause-controls-toggle`, `pause-controls`, `start-level`); renaming ids in HTML requires updating these lookups. The overlay is toggled via the `hidden` class defined in `style.css`.
+- Controls are documented in four places: the keydown handler, the controls list in the panel and the `#pause-controls` list in `index.html`, and the README table.
