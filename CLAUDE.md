@@ -25,12 +25,13 @@ There is nothing to compile; reload the browser after edits. Verify changes manu
 - **Lock pipeline:** `lockPiece()` → `merge()` → `clearLines()` (updates lines/score/level/`dropInterval`) → `spawn()` (promotes `next`, may call `endGame()`).
 - **Loop:** `loop(ts)` via `requestAnimationFrame` accumulates `dt` into `dropAccum` and steps gravity when it exceeds `dropInterval`, then redraws everything each frame. Pause/game-over stop it with `cancelAnimationFrame(animId)`; resuming resets `lastTime` to avoid a large `dt` jump.
 - **HUD** is DOM (`updateHUD()`), not canvas; the keydown handler calls it after every key.
+- **Start screen / records.** On load `init()` is NOT called: `#start-screen` is shown and `startGame()` (Jugar button or Enter) hides it and calls `init()`, so `board`/`current` are undefined until then. The keydown handler ignores events from `input/select/textarea` and swallows all keys while the start screen is visible. Records live in `localStorage['tetris-records']` (`{ top: [{name, score, lines, level, date}] (max 5), bestCombo, maxLines }`, validated by `loadRecords()`) plus `tetris-last-name`. `clearLines()` tracks `combo`/`maxComboThisGame` (consecutive line-clearing locks); `endGame()` calls `showGameOverRecords()`; `init()` calls `commitPendingRecord()` first so restarting without pressing Guardar still saves a qualifying score. Names are rendered with `textContent` only.
 
 ## Coupling between files
 
 - `COLS × BLOCK` / `ROWS × BLOCK` must match `<canvas id="board" width="300" height="600">` in `index.html`.
 - `drawNext()` assumes a 4×4 grid of 30px cells, matching `<canvas id="next-canvas" width="120" height="120">`.
-- `game.js` grabs elements by id at load time (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`); renaming ids in HTML requires updating these lookups. The overlay is toggled via the `hidden` class defined in `style.css`.
+- `game.js` grabs elements by id at load time (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, plus the records ids: `start-screen`, `start-table`, `start-stats`, `play-btn`, `reset-records-btn`, `gameover-records`, `record-form`, `record-rank`, `record-name`, `gameover-table`, `gameover-stats`); renaming ids in HTML requires updating these lookups. The overlay is toggled via the `hidden` class defined in `style.css`.
 - Controls are documented in three places: the keydown handler, the controls list in `index.html`, and the README table.
 
 ## Known quirk
